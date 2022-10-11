@@ -52,58 +52,61 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverArmInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverHeuristicInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\Baker\HumanoidBakerInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverFABRIKRootInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\Baker\Helpers\SaveClipFolderPanel.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Scripts\BipedReferencesInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverLegInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\InteractionTriggerInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Scripts\SerializedContent.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\InteractionTargetInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\BipedIKInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\AimPoserInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverFullBodyInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverLimbInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\FABRIKRootInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Scripts\InspectorCommentDrawer.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Demo Scripts\CameraControllerInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\EditorIKInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\RotationLimitHingeInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKEffectorInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Scripts\CommentsInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverFullBodyBipedInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\GroundingInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\RotationLimitSplineInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\Baker\Helpers\AnimationUtilityExtended.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverAimInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\RotationLimitAngleInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\TrigonometricIKInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\Baker\BakerInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverTrigonometricInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Scripts\LargeHeaderDrawer.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\AimIKInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\ConstraintsInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Scripts\Inspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\FABRIKInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\RotationLimitPolygonalInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\FullBodyBipedIKInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\LegIKInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\LimbIKInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\RotationLimitInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\_DEMOS\BendGoalInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverLookAtInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\VRIKInspector.cs" />
-     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKExecutionOrderInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\ArmIKInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\Baker\GenericBakerInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\CCDIKInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\FingerRigInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\Baker\HumanoidBakerInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverFABRIKRootInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Scripts\SerializedContent.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\InteractionTargetInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverLimbInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Demo Scripts\CameraControllerInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\EditorIKInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverFullBodyBipedInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Scripts\LargeHeaderDrawer.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverLookAtInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\VRIKInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverArmInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Scripts\BipedReferencesInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Scripts\InspectorCommentDrawer.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\Shared Scripts\CommentsInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\RotationLimitSplineInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\Baker\Helpers\AnimationUtilityExtended.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverAimInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\RotationLimitAngleInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverTrigonometricInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\ConstraintsInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\FABRIKInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\FullBodyBipedIKInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\LegIKInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKExecutionOrderInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\LookAtIKInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverHeuristicInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\IKSolverLegInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\InteractionTriggerInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\AimPoserInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\FABRIKRootInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\Baker\BakerInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\AimIKInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\RotationLimitPolygonalInspector.cs" />
+     <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\_DEMOS\BendGoalInspector.cs" />
      <Compile Include="Assets\Plugins\RootMotion\Editor\FinalIK\BipedIKSolversInspector.cs" />
+     <Compile Include="Assets\Plugins\Demigiant\DOTweenPro\Editor\DOTweenPreviewManager.cs" />
+     <Compile Include="Assets\Plugins\Demigiant\DOTweenPro\Editor\DOTweenAnimationInspector.cs" />
+     <None Include="Assets\Plugins\Demigiant\DemiLib\Core\Editor\DemiEditor.xml" />
  <Reference Include="UnityEngine">
  <HintPath>E:/Unity/2020.3.33f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>
@@ -341,23 +344,20 @@
  <Reference Include="Unity.Plastic.Antlr3.Runtime">
  <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Library/PackageCache/com.unity.collab-proxy@1.15.15/Lib/Editor/PlasticSCM/Unity.Plastic.Antlr3.Runtime.dll</HintPath>
  </Reference>
+ <Reference Include="Sirenix.OdinInspector.Editor">
+ <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Editor.dll</HintPath>
+ </Reference>
  <Reference Include="unityplastic">
  <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Library/PackageCache/com.unity.collab-proxy@1.15.15/Lib/Editor/PlasticSCM/unityplastic.dll</HintPath>
- </Reference>
- <Reference Include="log4netPlastic">
- <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Library/PackageCache/com.unity.collab-proxy@1.15.15/Lib/Editor/PlasticSCM/log4netPlastic.dll</HintPath>
  </Reference>
  <Reference Include="Sirenix.OdinInspector.Attributes">
  <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Attributes.dll</HintPath>
  </Reference>
+ <Reference Include="log4netPlastic">
+ <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Library/PackageCache/com.unity.collab-proxy@1.15.15/Lib/Editor/PlasticSCM/log4netPlastic.dll</HintPath>
+ </Reference>
  <Reference Include="Sirenix.Serialization.Config">
  <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/Sirenix.Serialization.Config.dll</HintPath>
- </Reference>
- <Reference Include="Sirenix.Utilities.Editor">
- <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Sirenix.OdinInspector.Editor">
- <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Sirenix.Utilities">
  <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.dll</HintPath>
@@ -367,6 +367,27 @@
  </Reference>
  <Reference Include="Sirenix.Serialization.AOTGenerated">
  <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/AOT/Sirenix.Serialization.AOTGenerated.dll</HintPath>
+ </Reference>
+ <Reference Include="Sirenix.Utilities.Editor">
+ <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="DemiLib">
+ <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Demigiant/DemiLib/Core/DemiLib.dll</HintPath>
+ </Reference>
+ <Reference Include="DOTweenProEditor">
+ <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Demigiant/DOTweenPro/Editor/DOTweenProEditor.dll</HintPath>
+ </Reference>
+ <Reference Include="DOTweenEditor">
+ <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll</HintPath>
+ </Reference>
+ <Reference Include="DemiEditor">
+ <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Demigiant/DemiLib/Core/Editor/DemiEditor.dll</HintPath>
+ </Reference>
+ <Reference Include="DOTween">
+ <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Demigiant/DOTween/DOTween.dll</HintPath>
+ </Reference>
+ <Reference Include="DOTweenPro">
+ <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Demigiant/DOTweenPro/DOTweenPro.dll</HintPath>
  </Reference>
  <Reference Include="nunit.framework">
  <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Library/PackageCache/com.unity.ext.nunit@1.0.6/net35/unity-custom/nunit.framework.dll</HintPath>
@@ -753,9 +774,17 @@
       <Project>{8319661b-33de-b1b4-0f9b-fe98dd84684c}</Project>
       <Name>Unity.Timeline</Name>
     </ProjectReference>
+    <ProjectReference Include="Sirenix.OdinInspector.CompatibilityLayer.csproj">
+      <Project>{794c62fc-2265-ef18-2054-bac407f175c6}</Project>
+      <Name>Sirenix.OdinInspector.CompatibilityLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.TextMeshPro.csproj">
       <Project>{680a190e-027c-55d1-cecf-905a4fa47cb9}</Project>
       <Name>Unity.TextMeshPro</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Mathematics.Editor.csproj">
+      <Project>{d5832307-7120-f54f-e386-b64ac9285258}</Project>
+      <Name>Unity.Mathematics.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{192b54eb-1e36-8178-c312-841c00d24d02}</Project>
@@ -769,25 +798,17 @@
       <Project>{d327f894-c061-bc7c-a190-3e2f80ac6577}</Project>
       <Name>Unity.Rider.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="UnityEngine.UI.csproj">
-      <Project>{406db75e-4363-3498-0f7e-acffc38718cf}</Project>
-      <Name>UnityEngine.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="Sirenix.OdinInspector.CompatibilityLayer.csproj">
-      <Project>{794c62fc-2265-ef18-2054-bac407f175c6}</Project>
-      <Name>Sirenix.OdinInspector.CompatibilityLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="Sirenix.OdinInspector.Modules.UnityMathematics.csproj">
       <Project>{8fe06b56-09de-7239-de4a-e564bdedbe17}</Project>
       <Name>Sirenix.OdinInspector.Modules.UnityMathematics</Name>
     </ProjectReference>
+    <ProjectReference Include="UnityEngine.UI.csproj">
+      <Project>{406db75e-4363-3498-0f7e-acffc38718cf}</Project>
+      <Name>UnityEngine.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="Sirenix.OdinInspector.CompatibilityLayer.Editor.csproj">
       <Project>{e5613b7e-74a6-ea91-b256-8f602758392a}</Project>
       <Name>Sirenix.OdinInspector.CompatibilityLayer.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Mathematics.Editor.csproj">
-      <Project>{d5832307-7120-f54f-e386-b64ac9285258}</Project>
-      <Name>Unity.Mathematics.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Mathematics.csproj">
       <Project>{53c76c75-9975-3776-e65f-c33036b4881f}</Project>
