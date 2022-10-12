@@ -9,15 +9,15 @@ namespace IKAnimation
 
         public static LooKAtIKManager               Instance => mInstance ??= new LooKAtIKManager();
 
-        private Dictionary<string, LookAtIKCtrl>    IKCtrlDict = new Dictionary<string, LookAtIKCtrl>();
+        private Dictionary<string, LookAtIKModelCtrl>    IKCtrlDict = new Dictionary<string, LookAtIKModelCtrl>();
 
 
-        public Dictionary<string, LookAtIKCtrl> CtrlDic
+        public Dictionary<string, LookAtIKModelCtrl> CtrlDic
         {
             get { return this.IKCtrlDict; }
         }
 
-        public void AddIKCtrl(string key, LookAtIKCtrl value)
+        public void AddIKCtrl(string key, LookAtIKModelCtrl value)
         {
             if (!this.IKCtrlDict.ContainsKey(key))
             {
@@ -25,7 +25,7 @@ namespace IKAnimation
             }
         }
 
-        public LookAtIKCtrl GetIKCtrl(string key)
+        public LookAtIKModelCtrl GetIKCtrl(string key)
         {
             if (this.IKCtrlDict.ContainsKey(key))
             {

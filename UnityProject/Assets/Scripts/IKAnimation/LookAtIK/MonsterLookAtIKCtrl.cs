@@ -5,35 +5,18 @@ namespace IKAnimation
 {
     public class MonsterLookAtIKCtrl : LookAtIKCtrl
     {
-        private void Update()
-        {
-            if (this.IKActive)
-            {
-                var tempFov = this.FovProbe();
-                if (tempFov != this.InView)
-                {
-                    this.InView = tempFov;
-                    if (this.InView)
-                        this.FadeIn();
-                    else
-                        this.FadeOut();
-                }
-            }
-        }
-        
         /// <summary>
         /// 扇形视野检测
         /// </summary>
         /// <returns></returns>
-        public override bool FovProbe()
+        public override bool FovProbe(Transform rTarget = null)
         {
-            if (this.TargetTrans == null)
+            if (this.CurTargetTrans == null)
                 return false;
-
             if (this.Is3DView)
-                return LookAtProbe.CylinderProbe(this.transform, this.TargetTrans, this.IKConfig);
+                return LookAtProbe.CylinderProbe(this.BodyTrans, rTarget != null ? rTarget :this.CurTargetTrans, this.IKConfig);
             else
-                return LookAtProbe.SectorProbe(this.transform, this.TargetTrans, this.IKConfig);
+                return LookAtProbe.SectorProbe(this.BodyTrans, rTarget != null ? rTarget :this.CurTargetTrans, this.IKConfig);
         }
     }
 }

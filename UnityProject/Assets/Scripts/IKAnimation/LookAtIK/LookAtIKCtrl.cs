@@ -1,5 +1,7 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using RootMotion.FinalIK;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace IKAnimation
@@ -11,7 +13,14 @@ namespace IKAnimation
         
         public LookAtIKConfig       IKConfig;
         
-        public Transform            TargetTrans; 
+        [LabelText("当前目标"), HideInInspector]
+        public Transform            CurTargetTrans;
+
+        [LabelText("新目标")]
+        public Transform            NewTargetTrans;
+        
+        [LabelText("身体")]
+        public Transform            BodyTrans;
         
         public bool                 Is3DView;
         
@@ -29,26 +38,35 @@ namespace IKAnimation
         /// 探测方法，需根据策划需求重写
         /// </summary>
         /// <returns></returns>
-        public virtual bool FovProbe() { return false;}
+        public virtual bool FovProbe(Transform rTarget = null) { return false;}
+        
         
         private void Awake()
         {
             this.IKActive = false;
-            if (this.LookAtPoint == null)
-            {
-                this.LookAtPoint = new GameObject("LookAtPoint");
-                this.LookAtPoint.transform.SetParent(this.transform);
-            }
-            this.InitLookAtIK();
+            this.InView = false;
             //初始化时把全局权重设置为0
             this.IKSover.IKPositionWeight = 0;
+        }
+        
+        private void Update()
+        {
+            if (!this.IKActive)
+                return;
+            // 同一目标则检测范围
+            if (this.CurTargetTrans != null && this.NewTargetTrans == this.CurTargetTrans)
+                this.UpdateView();
+            else //切换目标
+                this.UpdateTarget();
         }
         
         /// <summary>
         /// IK初始化
         /// </summary>
-        private void InitLookAtIK()
+        public void InitLookAtIK(Transform tBaseTrans, GameObject gLookAtPoint)
         {
+            this.LookAtPoint = gLookAtPoint;
+            this.BodyTrans = tBaseTrans;
             if (this.LookAtIK == null || this.IKConfig == null)
             {
                 this.IKActive = false;
@@ -57,10 +75,108 @@ namespace IKAnimation
             }
             //绑定LookAtPoint
             this.IKSover.target = this.LookAtPoint.transform;
-            LooKAtIKManager.Instance.AddIKCtrl(this.transform.name, this);
+            
             //设置权重
             this.UpateIKConfig();
         }
+        
+        private void UpdateView()
+        {
+            var tempView = this.GetLookProbe(null);
+            if (tempView != this.InView)
+            {
+                this.InView = tempView;
+                if (this.InView)
+                    this.FadeIn(this.IKConfig.FadeInTime);
+                else
+                    this.FadeOut(this.IKConfig.FadeOutTime);
+            }
+        }
+        
+        private void UpdateTarget()
+        {
+            // 空目标表示不注视
+            if (this.NewTargetTrans == null)
+            {
+                this.SetLookAtNull();
+                return;
+            }
+            
+            //先判断新目标是否在视野内
+            var bInView = this.GetLookProbe(this.NewTargetTrans);
+            if (bInView)
+            {
+                // 当前锁定的目标不在视野范围内，直接看向新目标
+                if (this.CurTargetTrans == null || !this.GetLookProbe(null))
+                {
+                    this.LookAtNewTarget(this.NewTargetTrans);
+                }
+                else //切换注视目标
+                {
+                    var curTargetVec = this.CurTargetTrans.position - this.transform.position;
+                    var newTargetVec = this.NewTargetTrans.position - this.transform.position;
+                    var targetAngle = Vector3.Angle(curTargetVec, newTargetVec);
+                    // 大于配置角度，需要每帧修正坐标
+                    if (targetAngle > this.IKConfig.TargetSwithAngle)
+                    {
+                        this.SwitchTweener?.Kill();
+                        this.LookAtPoint.transform.SetParent(this.NewTargetTrans);
+                        
+                        //判断新旧目标是否位于同侧
+                        var curIsRight = Vector3.Dot(this.transform.right, curTargetVec) > 0 ;
+                        var newIsRight = Vector3.Dot(this.transform.right, newTargetVec) > 0 ;
+                        
+                        //回正后再转向
+                        if (this.IKConfig.ST4Forward && (curIsRight != newIsRight))
+                        {
+                            this.CurTargetTrans = this.NewTargetTrans;
+                            this.SwitchTweener?.Kill();
+                            //回正
+                            this.SwitchTweener =  DOTween.To(() => this.IKSover.IKPositionWeight, 
+                                (x) => this.IKSover.IKPositionWeight = x, 
+                                0,
+                                this.IKConfig.SwitchFadeOutTime);
+                            
+                            //回正完成后设置新目标点
+                            this.SwitchTweener.onComplete = () =>
+                            {
+                                this.SetLookAtPoint();
+                                this.FadeIn(this.IKConfig.FadeInTime);
+                            };
+                        }
+                        else // 均速转向过去
+                        {
+                            this.CurTargetTrans = this.NewTargetTrans;
+                            this.SwitchTweener?.Kill();
+                            this.SwitchTweener = DOTween.To(() => this.LookAtPoint.transform.localPosition, 
+                                (x) => { this.LookAtPoint.transform.localPosition = x; },
+                                new Vector3(0, 0, 0), 
+                                this.IKConfig.DireTurnToTime);
+                            this.SwitchTweener.onComplete = this.SetLookAtPoint;
+                        }
+                    }
+                    else //直接转过去，一般不会走到这里
+                    {
+                        this.CurTargetTrans = this.NewTargetTrans;
+                        this.SetLookAtPoint();
+                    }
+                }
+            }else
+            {
+                //不在范围内就回正
+                this.CurTargetTrans = this.NewTargetTrans;
+                this.SetLookAtPointParent();
+                this.SwitchTweener?.Kill();
+                this.SwitchTweener = DOTween.To(() => this.LookAtPoint.transform.localPosition, 
+                    (x) => { this.LookAtPoint.transform.localPosition = x; },
+                    new Vector3(0, 0, 0), 
+                    0.5f);
+                this.SwitchTweener.onComplete = this.SetLookAtPoint;
+                this.FadeOut(this.IKConfig.FadeOutTime);
+            }
+        }
+        
+        
 
         public void UpateIKConfig()
         {
@@ -75,42 +191,56 @@ namespace IKAnimation
         
         public override void OpenIK()
         {
-            this.IKActive = true;
-            this.FadeIn();
+            this.FadeIn(this.IKConfig.FadeInTime);
         }
         
         public override void CloseIK()
         {
-            this.IKActive = false;
-            this.FadeOut();
+            this.FadeOut(this.IKConfig.FadeOutTime);
         }
         
-        public void FadeIn()
+        public void FadeIn(float fTime, Action rCall = null)
         {
             this.IKTweener?.Kill();
             this.IKTweener = DOTween.To(() => this.IKSover.IKPositionWeight, 
                 (x) =>  this.IKSover.IKPositionWeight = x, 
                 this.IKConfig.Weight,
-                this.IKConfig.FadeInTime);
+                fTime).SetEase(Ease.Linear);
+            this.IKTweener.onComplete = () =>
+            {
+                rCall?.Invoke();
+            };
         }
 
-        public void FadeOut()
+        public void FadeOut(float fTime, Action rCall = null)
         {
             this.IKTweener?.Kill();
             this.IKTweener =  DOTween.To(() => this.IKSover.IKPositionWeight, 
                 (x) => this.IKSover.IKPositionWeight = x, 
                 0,
-                this.IKConfig.FadeOutTime);
+                fTime);
+            this.IKTweener.onComplete = () =>
+            {
+                Debug.LogError("Dotween CallBack!!!!");
+                rCall?.Invoke();
+            };
         }
 
+        /// <summary>
+        /// 取消注视
+        /// </summary>
         public void SetLookAtNull()
         {
             this.CloseIK();
             this.InView = false;
-            this.TargetTrans = null;
+            this.CurTargetTrans = null;
+            this.NewTargetTrans = null;
         }
 
-        
+        /// <summary>
+        /// 设置注视目标
+        /// </summary>
+        /// <param name="rGo"></param>
         public void SetLookAtTarget(GameObject rGo)
         {
             if (rGo == null)
@@ -129,84 +259,46 @@ namespace IKAnimation
                 Debug.LogError("Look IK Component is Null !!!");
                 return;
             }
-            
-            // 空目标表示不注视，或者可以直接调用CloseIK
-            if (rTarget == null)
+
+            this.IKActive = true;
+            this.NewTargetTrans = rTarget;
+            if (this.CurTargetTrans == null)
             {
-                this.SetLookAtNull();
-                return;
-            }
-            
-            // 锁一个初始目标
-            if (this.TargetTrans == null)
-            {
-                this.IKActive = true;
-                this.TargetTrans = rTarget;
+                this.CurTargetTrans = this.NewTargetTrans;
                 this.SetLookAtPoint();
-                this.FadeIn();
-            }
-            else //切换注视目标
-            {
-                var curTargetVec = this.TargetTrans.position - this.transform.position;
-                var newTargetVec = rTarget.position - this.transform.position;
-                var targetAngle = Vector3.Angle(curTargetVec, newTargetVec);
-                if (targetAngle > this.IKConfig.TargetSwithAngle)
-                {
-                    this.SwitchTweener?.Kill();
-                    this.LookAtPoint.transform.SetParent(rTarget);
-                    
-                    //判断新旧目标是否位于同侧
-                    var curIsRight = Vector3.Dot(this.transform.right, curTargetVec) > 0 ;
-                    var newIsRight = Vector3.Dot(this.transform.right, newTargetVec) > 0 ;
-                    
-                    //回正后再转向
-                    if (this.IKConfig.ST4Forward && (curIsRight == newIsRight))
-                    {
-                        this.SwitchTweener?.Kill();
-                        
-                        //回正
-                        this.SwitchTweener =  DOTween.To(() => this.IKSover.IKPositionWeight, 
-                            (x) => this.IKSover.IKPositionWeight = x, 
-                            0,
-                            this.IKConfig.FadeOutTime);
-                        
-                        //回正完成后设置新目标点
-                        this.SwitchTweener.onComplete = () =>
-                        {
-                            this.TargetTrans = rTarget;
-                            this.SetLookAtPoint();
-                            this.IKActive = true;
-                        };
-                    }
-                    else
-                    {
-                        this.IKActive = true;
-                        this.SwitchTweener = DOTween.To(() => this.LookAtPoint.transform.localPosition, 
-                            (x) => { this.LookAtPoint.transform.localPosition = x; },
-                            new Vector3(0, 0, 0), 
-                            0.5f);
-                    }
-                }
-                else
-                {
-                    this.IKActive = true;
-                    this.SetLookAtPoint();
-                }
-                
-                this.TargetTrans = rTarget;
             }
         }
 
         private void SetLookAtPoint()
         {
-            this.LookAtPoint.transform.SetParent(this.TargetTrans);
+            this.LookAtPoint.transform.SetParent(this.CurTargetTrans);
             this.LookAtPoint.transform.localPosition = Vector3.zero;
         }
-        
-        private void OnDestroy()
+
+        private void SetLookAtPointParent()
         {
-            LooKAtIKManager.Instance.RemoveIKCtrl(this.transform.name);
-            GameObject.Destroy(this.LookAtPoint);
+            this.LookAtPoint.transform.SetParent(this.CurTargetTrans);
+        }
+
+        private void LookAtNewTarget(Transform rTarget)
+        {
+            this.CurTargetTrans = rTarget;
+            this.SetLookAtPoint();
+            this.FadeIn(this.IKConfig.FadeInTime);
+        }
+
+        
+        private bool GetLookProbe(Transform rTarget)
+        {
+            switch (this)
+            {
+                case MonsterLookAtIKCtrl mCtrl:
+                    return mCtrl.FovProbe(rTarget);
+                case HumanLookAtIKCtrl hCtrl:
+                    return hCtrl.FovProbe(rTarget);
+                default:
+                    return this.FovProbe();
+            }
         }
     }
 }
