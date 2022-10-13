@@ -106,16 +106,17 @@ namespace IKAnimation
             var bInView = this.GetLookProbe(this.NewTargetTrans);
             if (bInView)
             {
+                var curTargetVec = this.CurTargetTrans == null ? this.BodyTrans.forward : this.CurTargetTrans.position - this.transform.position;
+                var newTargetVec = this.NewTargetTrans.position - this.transform.position;
+                var targetAngle = Vector3.Angle(curTargetVec, newTargetVec);
+                var fTime = this.GetIKConfigTime(targetAngle);
                 // 当前锁定的目标不在视野范围内，直接看向新目标
                 if (this.CurTargetTrans == null || !this.GetLookProbe(null))
                 {
-                    this.LookAtNewTarget(this.NewTargetTrans);
+                    this.LookAtNewTarget(this.NewTargetTrans, targetAngle);
                 }
                 else //切换注视目标
                 {
-                    var curTargetVec = this.CurTargetTrans.position - this.transform.position;
-                    var newTargetVec = this.NewTargetTrans.position - this.transform.position;
-                    var targetAngle = Vector3.Angle(curTargetVec, newTargetVec);
                     // 大于配置角度，需要每帧修正坐标
                     if (targetAngle > this.IKConfig.TargetSwithAngle)
                     {
@@ -135,13 +136,13 @@ namespace IKAnimation
                             this.SwitchTweener =  DOTween.To(() => this.IKSover.IKPositionWeight, 
                                 (x) => this.IKSover.IKPositionWeight = x, 
                                 0,
-                                this.IKConfig.SwitchFadeOutTime);
+                                this.IKConfig.SwitchFadeOutTime).SetEase(this.IKConfig.ResetCurveType);
                             
                             //回正完成后设置新目标点
                             this.SwitchTweener.onComplete = () =>
                             {
                                 this.SetLookAtPoint();
-                                this.FadeIn(this.IKConfig.FadeInTime);
+                                this.FadeIn(fTime);
                             };
                         }
                         else // 均速转向过去
@@ -151,7 +152,7 @@ namespace IKAnimation
                             this.SwitchTweener = DOTween.To(() => this.LookAtPoint.transform.localPosition, 
                                 (x) => { this.LookAtPoint.transform.localPosition = x; },
                                 new Vector3(0, 0, 0), 
-                                this.IKConfig.DireTurnToTime);
+                                fTime).SetEase(this.IKConfig.LookCurveType);
                             this.SwitchTweener.onComplete = this.SetLookAtPoint;
                         }
                     }
@@ -170,7 +171,7 @@ namespace IKAnimation
                 this.SwitchTweener = DOTween.To(() => this.LookAtPoint.transform.localPosition, 
                     (x) => { this.LookAtPoint.transform.localPosition = x; },
                     new Vector3(0, 0, 0), 
-                    0.5f);
+                    0.5f).SetEase(this.IKConfig.ResetCurveType);
                 this.SwitchTweener.onComplete = this.SetLookAtPoint;
                 this.FadeOut(this.IKConfig.FadeOutTime);
             }
@@ -205,7 +206,7 @@ namespace IKAnimation
             this.IKTweener = DOTween.To(() => this.IKSover.IKPositionWeight, 
                 (x) =>  this.IKSover.IKPositionWeight = x, 
                 this.IKConfig.Weight,
-                fTime).SetEase(Ease.Linear);
+                fTime).SetEase(this.IKConfig.LookCurveType);
             this.IKTweener.onComplete = () =>
             {
                 rCall?.Invoke();
@@ -218,7 +219,7 @@ namespace IKAnimation
             this.IKTweener =  DOTween.To(() => this.IKSover.IKPositionWeight, 
                 (x) => this.IKSover.IKPositionWeight = x, 
                 0,
-                fTime);
+                fTime).SetEase(this.IKConfig.ResetCurveType);
             this.IKTweener.onComplete = () =>
             {
                 rCall?.Invoke();
@@ -279,11 +280,11 @@ namespace IKAnimation
             this.LookAtPoint.transform.SetParent(this.CurTargetTrans);
         }
 
-        private void LookAtNewTarget(Transform rTarget)
+        private void LookAtNewTarget(Transform rTarget, float fTime)
         {
             this.CurTargetTrans = rTarget;
             this.SetLookAtPoint();
-            this.FadeIn(this.IKConfig.FadeInTime);
+            this.FadeIn(fTime);
         }
 
         
@@ -298,6 +299,26 @@ namespace IKAnimation
                 default:
                     return this.FovProbe();
             }
+        }
+
+        private float GetIKConfigTime(float fAngle)
+        {
+            float fTime = this.IKConfig.FadeInTime;
+            var rList = this.IKConfig.DirAngelTimeList;
+            if (rList == null || rList.Count <= 0)
+            {
+                return fTime;
+            }
+            for (int i = rList.Count - 1; i >= 0; i--)
+            {
+                var rTimeConfig = rList[i];
+                if (fAngle > rTimeConfig.AngleValue)
+                {
+                    fTime = rTimeConfig.Time;
+                    break;
+                }
+            }
+            return fTime;
         }
     }
 }

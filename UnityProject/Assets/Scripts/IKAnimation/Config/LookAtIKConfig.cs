@@ -11,7 +11,7 @@ namespace IKAnimation
     public class LookAtIKConfig : SerializedScriptableObject
     {
         [Title("视野参数")]
-        [LabelText("视角范围"), Range(0, 180)]
+        [LabelText("视野角度"), Range(0, 180)]
         public float        Angle;
         
         [LabelText("视野距离")]
@@ -36,6 +36,9 @@ namespace IKAnimation
         public List<StepTime> DirAngelTimeList;
         
         [Title("锁定目标切换相关")]
+        [LabelText("切换动画所需最小角度"), Range(0, 360)]
+        public float        TargetSwithAngle = 5f;
+        
         [LabelText("切换锁定目标回正?")]
         public bool         ST4Forward;
         
@@ -43,16 +46,8 @@ namespace IKAnimation
         [ShowIf("@ST4Forward == true")]
         public float        SwitchFadeOutTime= 0.5f;
         
-        [LabelText("直接转向所需时间(没有配置使用默认时间)")]
-        [ShowIf("@ST4Forward == false")]
-        public List<StepTime> AngelTimeList;
-
-        [LabelText("直接转向默认时间")]
-        [ShowIf("@ST4Forward == false")]
-        public float        DireTurnToTime   = 1f;
-        
-        [LabelText("切换动画所需最小角度"), Range(0, 360)]
-        public float        TargetSwithAngle = 5f;
+        [LabelText("回正后转向新目标时间")]
+        public float        STNewTargetTime  = 0.4f;
         
         [Title("权重")]
         [PropertySpace]

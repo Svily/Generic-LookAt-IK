@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace IKAnimation
@@ -53,7 +52,5 @@ namespace IKAnimation
 
             return rBoneList;
         }
-
-
     }
 }
