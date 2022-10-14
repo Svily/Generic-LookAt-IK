@@ -1,23 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GYGame.World;
 
 namespace IKAnimation
 {
-    public class LooKAtIKManager 
+    public class LooKAtIKManager : GameController<LooKAtIKManager>
     {
-        private static LooKAtIKManager              mInstance;
-
-        public static LooKAtIKManager               Instance => mInstance ??= new LooKAtIKManager();
-
-        private Dictionary<string, LookAtIKModelCtrl>    IKCtrlDict = new Dictionary<string, LookAtIKModelCtrl>();
-
-
-        public Dictionary<string, LookAtIKModelCtrl> CtrlDic
+        private Dictionary<string, LookAtIKCtrl>    IKCtrlDict = new Dictionary<string, LookAtIKCtrl>();
+        
+        public Dictionary<string, LookAtIKCtrl> CtrlDic
         {
             get { return this.IKCtrlDict; }
         }
 
-        public void AddIKCtrl(string key, LookAtIKModelCtrl value)
+        public void AddIKCtrl(string key, LookAtIKCtrl value)
         {
             if (!this.IKCtrlDict.ContainsKey(key))
             {
@@ -25,7 +21,7 @@ namespace IKAnimation
             }
         }
 
-        public LookAtIKModelCtrl GetIKCtrl(string key)
+        public LookAtIKCtrl GetIKCtrl(string key)
         {
             if (this.IKCtrlDict.ContainsKey(key))
             {
@@ -40,8 +36,6 @@ namespace IKAnimation
             {
                 this.IKCtrlDict.Remove(key);
             }
-            
-            
         }
     }
 }

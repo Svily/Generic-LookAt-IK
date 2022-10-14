@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using RootMotion.FinalIK;
 using Sirenix.OdinInspector;
@@ -6,10 +8,10 @@ using UnityEngine;
 
 namespace IKAnimation
 {
-    [RequireComponent(typeof(LookAtIK)), DisallowMultipleComponent]
+    [DisallowMultipleComponent]
     public class LookAtIKCtrl : IKBase
     {
-        public LookAtIK             LookAtIK;
+        public List<LookAtIK>       LookAtIKList;
         
         public LookAtIKConfig       IKConfig;
         
@@ -28,25 +30,40 @@ namespace IKAnimation
         
         public GameObject           LookAtPoint;
         
-        public IKSolverLookAt       IKSover             => this.LookAtIK?.solver;
-
         private Tweener             SwitchTweener;
         
-        private Tweener             IKTweener;
+        private List<Tweener>       IKTweenerList       = new List<Tweener>();
         
+        // 待查找的目标列表
+        private List<Transform>     TargetList          = new List<Transform>();
+
+        public bool                 IsLocking;
+
         /// <summary>
         /// 探测方法，需根据策划需求重写
         /// </summary>
         /// <returns></returns>
         public virtual bool FovProbe(Transform rTarget = null) { return false;}
-        
+
+        #region MonoMethod
         
         private void Awake()
         {
-            this.IKActive = false;
+            this.IKActive = true;
             this.InView = false;
+            this.BodyTrans = this.transform;
+            this.LookAtIKList = this.transform.GetComponentsInChildren<LookAtIK>().ToList();
+            
+            if (this.LookAtPoint == null)
+            {
+                this.LookAtPoint = new GameObject("LookAtPoint");
+                this.LookAtPoint.transform.SetParent(this.transform);
+                this.LookAtPoint.transform.localPosition = Vector3.zero;
+            }
+            
             //初始化时把全局权重设置为0
-            this.IKSover.IKPositionWeight = 0;
+            this.InitIKSolver();
+            
         }
         
         private void Update()
@@ -59,26 +76,14 @@ namespace IKAnimation
             else //切换目标
                 this.UpdateTarget();
         }
-        
-        /// <summary>
-        /// IK初始化
-        /// </summary>
-        public void InitLookAtIK(Transform tBaseTrans, GameObject gLookAtPoint)
+
+        private void OnDestroy()
         {
-            this.LookAtPoint = gLookAtPoint;
-            this.BodyTrans = tBaseTrans;
-            if (this.LookAtIK == null || this.IKConfig == null)
-            {
-                this.IKActive = false;
-                Debug.LogError("LookAt IK or IKConfig is Null");
-                return;
-            }
-            //绑定LookAtPoint
-            this.IKSover.target = this.LookAtPoint.transform;
-            
-            //设置权重
-            this.UpateIKConfig();
+            Destroy(this.LookAtPoint);
         }
+
+        #endregion
+        
         
         private void UpdateView()
         {
@@ -106,6 +111,7 @@ namespace IKAnimation
             var bInView = this.GetLookProbe(this.NewTargetTrans);
             if (bInView)
             {
+                this.IsLocking = true;
                 var curTargetVec = this.CurTargetTrans == null ? this.BodyTrans.forward : this.CurTargetTrans.position - this.transform.position;
                 var newTargetVec = this.NewTargetTrans.position - this.transform.position;
                 var targetAngle = Vector3.Angle(curTargetVec, newTargetVec);
@@ -133,11 +139,7 @@ namespace IKAnimation
                             this.CurTargetTrans = this.NewTargetTrans;
                             this.SwitchTweener?.Kill();
                             //回正
-                            this.SwitchTweener =  DOTween.To(() => this.IKSover.IKPositionWeight, 
-                                (x) => this.IKSover.IKPositionWeight = x, 
-                                0,
-                                this.IKConfig.SwitchFadeOutTime).SetEase(this.IKConfig.ResetCurveType);
-                            
+                            this.FadeOut(this.IKConfig.SwitchFadeOutTime);
                             //回正完成后设置新目标点
                             this.SwitchTweener.onComplete = () =>
                             {
@@ -164,6 +166,7 @@ namespace IKAnimation
                 }
             }else
             {
+                this.IsLocking = false;
                 //不在范围内就回正
                 this.CurTargetTrans = this.NewTargetTrans;
                 this.SetLookAtPointParent();
@@ -176,23 +179,27 @@ namespace IKAnimation
                 this.FadeOut(this.IKConfig.FadeOutTime);
             }
         }
-        
-        
 
-        public void UpateIKConfig()
+        private void InitIKSolver()
         {
-            this.LookAtIK.solver.SetLookAtWeight(this.IKConfig.Weight, 
-                this.IKConfig.BodyWeight, 
-                this.IKConfig.HeadWeight, 
-                this.IKConfig.EyesWeight, 
-                this.IKConfig.ClampWeight, 
-                this.IKConfig.ClampHeadWeight, 
-                this.IKConfig.ClampEyesWeight);
+            this.LookAtIKList.ForEach((x) =>
+            {
+                x.solver.target = this.LookAtPoint.transform;
+                x.solver.SetLookAtWeight(this.IKConfig.Weight, 
+                    this.IKConfig.BodyWeight, 
+                    this.IKConfig.HeadWeight, 
+                    this.IKConfig.EyesWeight, 
+                    this.IKConfig.ClampWeight, 
+                    this.IKConfig.ClampHeadWeight, 
+                    this.IKConfig.ClampEyesWeight);
+            });
         }
         
         public override void OpenIK()
         {
-            this.FadeIn(this.IKConfig.FadeInTime);
+            // 在注视范围内才开启，避免硬切
+            if (this.InView)
+                this.FadeIn(this.IKConfig.FadeInTime);
         }
         
         public override void CloseIK()
@@ -202,28 +209,42 @@ namespace IKAnimation
         
         public void FadeIn(float fTime, Action rCall = null)
         {
-            this.IKTweener?.Kill();
-            this.IKTweener = DOTween.To(() => this.IKSover.IKPositionWeight, 
-                (x) =>  this.IKSover.IKPositionWeight = x, 
-                this.IKConfig.Weight,
-                fTime).SetEase(this.IKConfig.LookCurveType);
-            this.IKTweener.onComplete = () =>
+            this.IKTweenerList.ForEach(x=>x.Kill());
+            this.IKTweenerList.Clear();
+            for (int i = 0; i < this.LookAtIKList.Count; i++)
             {
-                rCall?.Invoke();
-            };
+                var nIndex = i;
+                var tempTweener =  DOTween.To(() =>this.LookAtIKList[nIndex].solver.IKPositionWeight, 
+                    (x) =>  this.LookAtIKList[nIndex].solver.IKPositionWeight = x, 
+                    this.IKConfig.Weight,
+                    fTime).SetEase(this.IKConfig.LookCurveType);
+                tempTweener.onComplete = () =>
+                {
+                    rCall?.Invoke();
+                };
+                
+                this.IKTweenerList.Add(tempTweener);
+            }
         }
 
         public void FadeOut(float fTime, Action rCall = null)
         {
-            this.IKTweener?.Kill();
-            this.IKTweener =  DOTween.To(() => this.IKSover.IKPositionWeight, 
-                (x) => this.IKSover.IKPositionWeight = x, 
-                0,
-                fTime).SetEase(this.IKConfig.ResetCurveType);
-            this.IKTweener.onComplete = () =>
+            this.IKTweenerList.ForEach(x=>x.Kill());
+            this.IKTweenerList.Clear();
+            for (int i = 0; i < this.LookAtIKList.Count; i++)
             {
-                rCall?.Invoke();
-            };
+                var nIndex = i;
+                var tempTweener =  DOTween.To(() => this.LookAtIKList[nIndex].solver.IKPositionWeight, 
+                    (x) => this.LookAtIKList[nIndex].solver.IKPositionWeight = x, 
+                    0,
+                    fTime).SetEase(this.IKConfig.ResetCurveType);
+                tempTweener.onComplete = () =>
+                {
+                    rCall?.Invoke();
+                };
+                
+                this.IKTweenerList.Add(tempTweener);
+            }
         }
 
         /// <summary>
@@ -254,7 +275,7 @@ namespace IKAnimation
         /// <param name="rTarget"></param>
         public void SetLookAtTarget(Transform rTarget)
         {
-            if (this.LookAtIK == null)
+            if (this.LookAtIKList == null || this.LookAtIKList.Count <= 0)
             {
                 Debug.LogError("Look IK Component is Null !!!");
                 return;
@@ -286,7 +307,6 @@ namespace IKAnimation
             this.SetLookAtPoint();
             this.FadeIn(fTime);
         }
-
         
         private bool GetLookProbe(Transform rTarget)
         {
@@ -320,5 +340,27 @@ namespace IKAnimation
             }
             return fTime;
         }
+
+
+        #region 测试
+
+#if UNITY_EDITOR
+        
+        public void UpdateSolverWeight()
+        {
+            this.LookAtIKList.ForEach((x) =>
+            {
+                x.solver.SetLookAtWeight(this.IKConfig.Weight, 
+                    this.IKConfig.BodyWeight, 
+                    this.IKConfig.HeadWeight, 
+                    this.IKConfig.EyesWeight, 
+                    this.IKConfig.ClampWeight, 
+                    this.IKConfig.ClampHeadWeight, 
+                    this.IKConfig.ClampEyesWeight);
+            });
+        }
+#endif
+
+        #endregion
     }
 }

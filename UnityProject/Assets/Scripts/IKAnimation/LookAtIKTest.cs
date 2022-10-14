@@ -12,13 +12,13 @@ namespace IKAnimation
         [LabelText("目标2")]
         public GameObject Target2;
 
-        public LookAtIKModelCtrl IKCtrl;
+        public LookAtIKCtrl IKCtrl;
 
         private int SwitchCount = 0;
 
         private void Awake()
         {
-            this.IKCtrl = this.GetComponent<LookAtIKModelCtrl>();
+            this.IKCtrl = this.GetComponent<LookAtIKCtrl>();
             this.Target1 = new GameObject("Target1");
             this.Target2 = new GameObject("Target2");
             this.Target1.transform.SetParent(this.transform);

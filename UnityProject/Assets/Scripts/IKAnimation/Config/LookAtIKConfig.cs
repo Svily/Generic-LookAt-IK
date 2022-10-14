@@ -77,7 +77,7 @@ namespace IKAnimation
         {
             foreach (var kv in LooKAtIKManager.Instance.CtrlDic)
             {
-                kv.Value.UpdateModelCtrl();
+                kv.Value.UpdateSolverWeight();
             }
         }
 #endif
