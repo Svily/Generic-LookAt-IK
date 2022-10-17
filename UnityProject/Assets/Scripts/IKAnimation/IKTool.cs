@@ -5,34 +5,28 @@ namespace IKAnimation
 {
     public static class IKTool
     {
-        public static Transform FindTransform(GameObject rGo, string targetName)
+        public static T RequireComponent<T>(this GameObject rGo) where T : Component
         {
-            Transform rHeadBone = FindBones(rGo.transform, targetName);
-            return rHeadBone;
+            T component = rGo.GetComponent<T>();
+            return component != null ? component : rGo.AddComponent<T>();
+        }
+        
+        public static List<Transform> FindTransform(GameObject rGo, string targetName)
+        {
+            List<Transform> headList = new List<Transform>();
+            FindBones(rGo.transform, targetName, ref headList);
+            return headList;
         }
 
-        public static Transform FindBones(Transform parent, string targetName)
+        public static void FindBones(Transform parent, string targetName, ref List<Transform> headList)
         {
-            Transform target = null;
-            if (parent.name.Contains(targetName))
-            {
-                target = parent;
-                return target;
-            }
-
             for (int i = 0; i < parent.childCount; i++)
             {
                 var curNode = parent.GetChild(i);
                 if (curNode.name.Contains(targetName))
-                    return curNode;
-                
-                target = FindBones(curNode, targetName);
-                if (target != null)
-                    return target;
-                
+                    headList.Add(curNode);
+                FindBones(curNode, targetName, ref headList);
             }
-
-            return target;
         }
 
         public static List<Transform> FindHeadBones(Transform rTrans, int nBoneCount)

@@ -36,8 +36,8 @@ namespace IKAnimation
         
         // 待查找的目标列表
         private List<Transform>     TargetList          = new List<Transform>();
-
-        public bool                 IsLocking;
+        
+        private bool                IsMultiHead;
 
         /// <summary>
         /// 探测方法，需根据策划需求重写
@@ -53,7 +53,7 @@ namespace IKAnimation
             this.InView = false;
             this.BodyTrans = this.transform;
             this.LookAtIKList = this.transform.GetComponentsInChildren<LookAtIK>().ToList();
-            
+            this.IsMultiHead = this.LookAtIKList.Count > 1;
             if (this.LookAtPoint == null)
             {
                 this.LookAtPoint = new GameObject("LookAtPoint");
@@ -74,7 +74,7 @@ namespace IKAnimation
             if (this.CurTargetTrans != null && this.NewTargetTrans == this.CurTargetTrans)
                 this.UpdateView();
             else //切换目标
-                this.UpdateTarget();
+                this.SwitchTarget();
         }
 
         private void OnDestroy()
@@ -98,7 +98,7 @@ namespace IKAnimation
             }
         }
         
-        private void UpdateTarget()
+        private void SwitchTarget()
         {
             // 空目标表示不注视
             if (this.NewTargetTrans == null)
@@ -111,7 +111,6 @@ namespace IKAnimation
             var bInView = this.GetLookProbe(this.NewTargetTrans);
             if (bInView)
             {
-                this.IsLocking = true;
                 var curTargetVec = this.CurTargetTrans == null ? this.BodyTrans.forward : this.CurTargetTrans.position - this.transform.position;
                 var newTargetVec = this.NewTargetTrans.position - this.transform.position;
                 var targetAngle = Vector3.Angle(curTargetVec, newTargetVec);
@@ -123,24 +122,27 @@ namespace IKAnimation
                 }
                 else //切换注视目标
                 {
-                    // 大于配置角度，需要每帧修正坐标
+                    this.CurTargetTrans = this.NewTargetTrans;
+                    // 大于配置角度，需要修正LookAtPoint坐标
                     if (targetAngle > this.IKConfig.TargetSwithAngle)
                     {
+                        this.CurTargetTrans = this.NewTargetTrans;
                         this.SwitchTweener?.Kill();
                         this.LookAtPoint.transform.SetParent(this.NewTargetTrans);
                         
                         //判断新旧目标是否位于同侧
                         var curIsRight = Vector3.Dot(this.transform.right, curTargetVec) > 0 ;
                         var newIsRight = Vector3.Dot(this.transform.right, newTargetVec) > 0 ;
-                        
+
                         //回正后再转向
                         if (this.IKConfig.ST4Forward && (curIsRight != newIsRight))
                         {
-                            this.CurTargetTrans = this.NewTargetTrans;
                             this.SwitchTweener?.Kill();
                             //回正
                             this.FadeOut(this.IKConfig.SwitchFadeOutTime);
                             //回正完成后设置新目标点
+                            targetAngle = Vector3.Angle(this.BodyTrans.forward, newTargetVec);
+                            fTime = this.GetIKConfigTime(targetAngle);
                             this.SwitchTweener.onComplete = () =>
                             {
                                 this.SetLookAtPoint();
@@ -149,7 +151,6 @@ namespace IKAnimation
                         }
                         else // 均速转向过去
                         {
-                            this.CurTargetTrans = this.NewTargetTrans;
                             this.SwitchTweener?.Kill();
                             this.SwitchTweener = DOTween.To(() => this.LookAtPoint.transform.localPosition, 
                                 (x) => { this.LookAtPoint.transform.localPosition = x; },
@@ -160,13 +161,11 @@ namespace IKAnimation
                     }
                     else //直接转过去，一般不会走到这里
                     {
-                        this.CurTargetTrans = this.NewTargetTrans;
                         this.SetLookAtPoint();
                     }
                 }
             }else
             {
-                this.IsLocking = false;
                 //不在范围内就回正
                 this.CurTargetTrans = this.NewTargetTrans;
                 this.SetLookAtPointParent();
