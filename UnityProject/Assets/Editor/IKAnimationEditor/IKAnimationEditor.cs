@@ -75,7 +75,7 @@ namespace IKAnimation
             {
                 foreach (var rHead in rHeadList)
                 {
-                    LookAtIK mLookAtIK = rCurGo.RequireComponent<LookAtIK>();
+                    LookAtIK mLookAtIK = rCurGo.AddComponent<LookAtIK>();
                     //找颈椎x段骨
                     var rBoneList = IKTool.FindHeadBones(rHead, rWindow.MonsterBoneNum).ToArray();
                     //初始化IK解算器
@@ -84,12 +84,11 @@ namespace IKAnimation
             }
             
         }
-
-
+        
         public static void ClearModel(GameObject rCurGo)
         {
             //先清除物体上所有的LookAt组件
-            GameObject.DestroyImmediate(rCurGo.GetComponent<LookAtIKCtrl>());
+            GameObject.DestroyImmediate(rCurGo.GetComponentInChildren<LookAtIKCtrl>());
             List<LookAtIK> ikList = rCurGo.GetComponentsInChildren<LookAtIK>().ToList();
             for (int i = ikList.Count - 1; i >= 0; i--)
             {
