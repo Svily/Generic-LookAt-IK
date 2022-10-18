@@ -145,7 +145,7 @@ namespace IKAnimation
                             fTime = this.GetIKConfigTime(targetAngle);
                             this.SwitchTweener.onComplete = () =>
                             {
-                                this.SetLookAtPoint();
+                                this.ResetLookAtPoint();
                                 this.FadeIn(fTime);
                             };
                         }
@@ -156,12 +156,12 @@ namespace IKAnimation
                                 (x) => { this.LookAtPoint.transform.localPosition = x; },
                                 new Vector3(0, 0, 0), 
                                 fTime).SetEase(this.IKConfig.LookCurveType);
-                            this.SwitchTweener.onComplete = this.SetLookAtPoint;
+                            this.SwitchTweener.onComplete = this.ResetLookAtPoint;
                         }
                     }
                     else //直接转过去，一般不会走到这里
                     {
-                        this.SetLookAtPoint();
+                        this.ResetLookAtPoint();
                     }
                 }
             }else
@@ -174,7 +174,7 @@ namespace IKAnimation
                     (x) => { this.LookAtPoint.transform.localPosition = x; },
                     new Vector3(0, 0, 0), 
                     0.5f).SetEase(this.IKConfig.ResetCurveType);
-                this.SwitchTweener.onComplete = this.SetLookAtPoint;
+                this.SwitchTweener.onComplete = this.ResetLookAtPoint;
                 this.FadeOut(this.IKConfig.FadeOutTime);
             }
         }
@@ -285,11 +285,28 @@ namespace IKAnimation
             if (this.CurTargetTrans == null)
             {
                 this.CurTargetTrans = this.NewTargetTrans;
-                this.SetLookAtPoint();
+                this.ResetLookAtPoint();
             }
         }
 
-        private void SetLookAtPoint()
+        /// <summary>
+        /// 注视某个点
+        /// </summary>
+        /// <param name="rTargetPoint"></param>
+        /// <param name="fTime"></param>
+        public void SetLookAtPoint(Vector3 rTargetPoint, float fTime = 0f)
+        {
+            var rNewTargetVec = rTargetPoint - this.BodyTrans.position;
+            var rCurTargetVec = this.LookAtPoint.transform.position - this.BodyTrans.position;
+            if (fTime == 0)
+                fTime = this.GetIKConfigTime(Vector3.Angle(rCurTargetVec, rNewTargetVec));
+            this.SwitchTweener?.Kill();
+            this.SwitchTweener = DOTween.To(() => this.LookAtPoint.transform.position,
+                (x) => this.LookAtPoint.transform.position = x,
+                rTargetPoint, fTime).SetEase(this.IKConfig.LookCurveType);
+        }
+
+        private void ResetLookAtPoint()
         {
             this.LookAtPoint.transform.SetParent(this.CurTargetTrans);
             this.LookAtPoint.transform.localPosition = Vector3.zero;
@@ -303,7 +320,7 @@ namespace IKAnimation
         private void LookAtNewTarget(Transform rTarget, float fTime)
         {
             this.CurTargetTrans = rTarget;
-            this.SetLookAtPoint();
+            this.ResetLookAtPoint();
             this.FadeIn(fTime);
         }
         
