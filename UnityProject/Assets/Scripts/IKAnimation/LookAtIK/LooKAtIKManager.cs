@@ -1,11 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using GYGame.World;
 
 namespace IKAnimation
 {
-    public class LooKAtIKManager : GameController<LooKAtIKManager>
+    public class LooKAtIKManager
     {
+
+        private static LooKAtIKManager mInstance;
+        
+        public static LooKAtIKManager Instance => mInstance ?? new LooKAtIKManager();
+
+        private LooKAtIKManager(){}
+        
         private Dictionary<string, LookAtIKCtrl>    IKCtrlDict = new Dictionary<string, LookAtIKCtrl>();
         
         public Dictionary<string, LookAtIKCtrl> CtrlDic

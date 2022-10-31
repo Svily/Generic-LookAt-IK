@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ICSharpCode.NRefactory.Ast;
 using RootMotion.FinalIK;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
