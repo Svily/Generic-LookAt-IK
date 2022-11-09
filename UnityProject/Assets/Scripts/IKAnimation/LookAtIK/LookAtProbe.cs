@@ -10,9 +10,12 @@ namespace IKAnimation
         /// <param name="tBaseTrans"></param>
         /// <param name="tTargetTrans"></param>
         /// <param name="rIKConfig"></param>
+        /// <param name="bInView"></param>
         /// <returns></returns>
-        public static bool SectorProbe(Transform tBaseTrans, Transform tTargetTrans, LookAtIKConfig rIKConfig)
+        public static bool SectorProbe(Transform tBaseTrans, Transform tTargetTrans, LookAtIKConfig rIKConfig, bool bInView = false)
         {
+            float configAngle = bInView ? rIKConfig.Angle : rIKConfig.DetectAngle;
+            
             //XZ平面的视野范围计算
             //所有计算均在世界坐标系下进行
             //构建目标与观测者的向量
@@ -27,7 +30,7 @@ namespace IKAnimation
             
             // 判断是否在视角内
             var targetAngle = Vector2.Angle(forwardVec, TargetHorVector);
-            return !(targetAngle > (rIKConfig.Angle / 2));
+            return !(targetAngle > (configAngle / 2));
         }
 
         /// <summary>
@@ -36,9 +39,12 @@ namespace IKAnimation
         /// <param name="tBaseTrans"></param>
         /// <param name="tTargetTrans"></param>
         /// <param name="rIKConfig"></param>
+        /// <param name="bInView"></param>
         /// <returns></returns>
-        public static bool CylinderProbe(Transform tBaseTrans, Transform tTargetTrans, LookAtIKConfig rIKConfig)
+        public static bool CylinderProbe(Transform tBaseTrans, Transform tTargetTrans, LookAtIKConfig rIKConfig, bool bInView = false)
         {
+            float configAngle = bInView ? rIKConfig.Angle : rIKConfig.DetectAngle;
+            
             //所有计算均在3D世界坐标系下进行
             //构建目标与观测者的向量
             Vector3 forwardVec = tBaseTrans.forward;
@@ -51,7 +57,7 @@ namespace IKAnimation
             
             // 判断是否在视角内
             var targetAngle = Vector3.Angle(forwardVec, TargetVector);
-            return !(targetAngle > (rIKConfig.Angle / 2));
+            return !(targetAngle > (configAngle / 2));
         }
     }
 }

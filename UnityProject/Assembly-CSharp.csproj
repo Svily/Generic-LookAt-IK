@@ -52,16 +52,19 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\IKAnimation\LookAtIKTest.cs" />
-     <Compile Include="Assets\Scripts\IKAnimation\IKBase.cs" />
-     <Compile Include="Assets\Scripts\IKAnimation\LookAtIK\LookAtIKCtrl.cs" />
-     <Compile Include="Assets\Scripts\IKAnimation\LookAtIK\LookAtProbe.cs" />
-     <Compile Include="Assets\Scripts\IKAnimation\LookAtIK\MonsterLookAtIKCtrl.cs" />
-     <Compile Include="Assets\Scripts\IKAnimation\IKTool.cs" />
      <Compile Include="Assets\Scripts\IKAnimation\LookAtIK\HumanLookAtIKCtrl.cs" />
-     <Compile Include="Assets\Scripts\IKAnimation\LookAtIK\AnimatorLookAtCtrl.cs" />
-     <Compile Include="Assets\Scripts\IKAnimation\LookAtIK\LooKAtIKManager.cs" />
+     <Compile Include="Assets\Scripts\IKAnimation\IKTool.cs" />
+     <Compile Include="Assets\Scripts\IKAnimation\LookAtIK\LookAtProbe.cs" />
+     <Compile Include="Assets\Scripts\IKAnimation\IKBase.cs" />
+     <Compile Include="Assets\Scripts\IKAnimation\LookAtIK\MonsterLookAtIKCtrl.cs" />
      <Compile Include="Assets\Scripts\IKAnimation\Config\LookAtIKConfig.cs" />
+     <Compile Include="Assets\Scripts\IKAnimation\LookAtIK\LookAtIKCtrl.cs" />
+     <Compile Include="Assets\Scripts\IKAnimation\LookAtIKTest.cs" />
+     <Compile Include="Assets\Scripts\IKAnimation\LookAtIK\LooKAtIKManager.cs" />
+     <Compile Include="Assets\Scripts\IKAnimation\LookAtIK\LookTarget.cs" />
+     <Compile Include="Assets\Scripts\IKAnimation\FakeIKBone.cs" />
+     <Compile Include="Assets\Scripts\IKAnimation\FakeHeadIKBone.cs" />
+     <Compile Include="Assets\Scripts\IKAnimation\FakeEyeIKBone.cs" />
  <Reference Include="UnityEngine">
  <HintPath>E:/Unity/2020.3.33f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>
@@ -284,6 +287,9 @@
  <Reference Include="UnityEditor.UnityConnectModule">
  <HintPath>E:/Unity/2020.3.33f1/Editor/Data/Managed/UnityEngine/UnityEditor.UnityConnectModule.dll</HintPath>
  </Reference>
+ <Reference Include="DemiLib">
+ <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Demigiant/DemiLib/Core/DemiLib.dll</HintPath>
+ </Reference>
  <Reference Include="Sirenix.OdinInspector.Editor">
  <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Editor.dll</HintPath>
  </Reference>
@@ -296,23 +302,20 @@
  <Reference Include="Sirenix.Utilities">
  <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.dll</HintPath>
  </Reference>
+ <Reference Include="DOTween">
+ <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Demigiant/DOTween/DOTween.dll</HintPath>
+ </Reference>
  <Reference Include="Sirenix.Serialization">
  <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/Sirenix.Serialization.dll</HintPath>
  </Reference>
  <Reference Include="Sirenix.Serialization.AOTGenerated">
  <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/AOT/Sirenix.Serialization.AOTGenerated.dll</HintPath>
  </Reference>
- <Reference Include="Sirenix.Utilities.Editor">
- <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.Editor.dll</HintPath>
- </Reference>
- <Reference Include="DemiLib">
- <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Demigiant/DemiLib/Core/DemiLib.dll</HintPath>
- </Reference>
- <Reference Include="DOTween">
- <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Demigiant/DOTween/DOTween.dll</HintPath>
- </Reference>
  <Reference Include="DOTweenPro">
  <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Demigiant/DOTweenPro/DOTweenPro.dll</HintPath>
+ </Reference>
+ <Reference Include="Sirenix.Utilities.Editor">
+ <HintPath>E:/GitHub/Generic-LookAt-IK/UnityProject/Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.Editor.dll</HintPath>
  </Reference>
  <Reference Include="netstandard">
  <HintPath>E:/Unity/2020.3.33f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

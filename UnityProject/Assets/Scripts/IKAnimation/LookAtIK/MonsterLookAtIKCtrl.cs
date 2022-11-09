@@ -14,9 +14,9 @@ namespace IKAnimation
             if (this.CurTargetTrans == null)
                 return false;
             if (this.Is3DView)
-                return LookAtProbe.CylinderProbe(this.BodyTrans, rTarget != null ? rTarget : this.LookAtPoint.transform, this.IKConfig);
+                return LookAtProbe.CylinderProbe(this.BodyTrans, rTarget != null ? rTarget : this.LookAtPoint.transform, this.IKConfig, this.InView);
             else
-                return LookAtProbe.SectorProbe(this.BodyTrans, rTarget != null ? rTarget : this.LookAtPoint.transform, this.IKConfig);
+                return LookAtProbe.SectorProbe(this.BodyTrans, rTarget != null ? rTarget : this.LookAtPoint.transform, this.IKConfig, this.InView);
         }
     }
 }

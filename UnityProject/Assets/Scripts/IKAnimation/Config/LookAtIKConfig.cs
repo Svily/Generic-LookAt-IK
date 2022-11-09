@@ -10,12 +10,32 @@ namespace IKAnimation
     [CreateAssetMenu(fileName = "New LookAtIK Config", menuName = "Final IK/Create LookAt Config")]
     public class LookAtIKConfig : SerializedScriptableObject
     {
+        
         [Title("视野参数")]
-        [LabelText("视野角度"), Range(0, 180)]
+        [LabelText("侦测视野角度"), Range(0, 180)]
+        public float        DetectAngle      = 90;
+        
+        [LabelText("跟随视野角度"), Range(0, 180)]
         public float        Angle;
         
         [LabelText("视野距离")]
         public float        ViewDistance     = 1000;
+        
+        [Title("头骨骼轴向修正")]
+        [LabelText("是否修正轴向")]
+        public bool         FixHeadAxis      = false;
+        
+        [LabelText("偏移角度"), Range(-180, 180),ShowIf("@FixHeadAxis == true")]
+        public float        OffsetAngle      = 30;
+        
+        [LabelText("旋转轴"), ShowIf("@FixHeadAxis == true && CustomAxis == false")]
+        public AxisType     AxisType         = AxisType.Left;
+        
+        [LabelText("自定义旋转轴"), ShowIf("@FixHeadAxis == true")]
+        public bool         CustomAxis       = false;
+        
+        [LabelText("旋转轴"), ShowIf("@CustomAxis == true && FixHeadAxis == true")]
+        public Vector3      AxisVec          = Vector3.zero;
         
         [Title("全局动画曲线类型(默认均速)")]
         [LabelText("看向")]
@@ -37,7 +57,7 @@ namespace IKAnimation
         
         [Title("锁定目标切换相关")]
         [LabelText("切换动画所需最小角度"), Range(0, 360)]
-        public float        TargetSwithAngle = 5f;
+        public float        TargetSwithAngle  = 5f;
         
         [LabelText("切换锁定目标回正?")]
         public bool         ST4Forward;
@@ -73,11 +93,14 @@ namespace IKAnimation
         public float        ClampEyesWeight  = 0.5f;
 
 #if UNITY_EDITOR
+        
         private void OnValidate()
         {
-            foreach (var kv in LooKAtIKManager.Instance.CtrlDic)
+            if (LooKAtIKManager.instance?.CtrlDic == null)
+                return;
+            foreach (var kv in LooKAtIKManager.instance?.CtrlDic)
             {
-                kv.Value.UpdateSolverWeight();
+                kv.Value?.InitIKSolver();
             }
         }
 #endif
@@ -92,5 +115,18 @@ namespace IKAnimation
 
         [LabelText("时间"), Range(0, 10)]
         public float Time;
+    }
+
+    [Serializable]
+    public enum AxisType
+    {
+        [LabelText("上")]
+        Up,
+        [LabelText("下")]
+        Down,
+        [LabelText("左")]
+        Left,
+        [LabelText("右")]
+        Right
     }
 }

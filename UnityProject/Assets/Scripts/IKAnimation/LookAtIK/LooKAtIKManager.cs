@@ -1,23 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GYGame.World;
+using RootMotion;
 
 namespace IKAnimation
 {
     public class LooKAtIKManager
     {
-
-        private static LooKAtIKManager mInstance;
         
-        public static LooKAtIKManager Instance => mInstance ?? new LooKAtIKManager();
-
         private LooKAtIKManager(){}
+        
+        private static LooKAtIKManager _instance;
+        
+        public static LooKAtIKManager instance
+        {
+            get { return _instance ??= new LooKAtIKManager(); }
+        }
         
         private Dictionary<string, LookAtIKCtrl>    IKCtrlDict = new Dictionary<string, LookAtIKCtrl>();
         
-        public Dictionary<string, LookAtIKCtrl> CtrlDic
-        {
-            get { return this.IKCtrlDict; }
-        }
+        public Dictionary<string, LookAtIKCtrl> CtrlDic => this.IKCtrlDict;
 
         public void AddIKCtrl(string key, LookAtIKCtrl value)
         {
