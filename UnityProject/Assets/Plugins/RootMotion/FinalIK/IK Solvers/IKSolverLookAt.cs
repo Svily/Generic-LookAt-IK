@@ -235,6 +235,17 @@ namespace RootMotion.FinalIK {
 				if (transform == null) return;
 				
 				axis = Quaternion.Inverse(transform.rotation) * root.forward;
+				this.startAxis = axis;
+			}
+
+			/// <summary>
+			/// 修正Bone的轴向
+			/// </summary>
+			/// <param name="angle"></param>
+			/// <param name="_axis"></param>
+			public void FixAxis(float angle, Vector3 _axis)
+			{
+				this.axis = Quaternion.AngleAxis(angle, _axis) * this.startAxis;
 			}
 			
 			/*
@@ -251,7 +262,7 @@ namespace RootMotion.FinalIK {
 			 * */
 			public Vector3 forward {
 				get {
-					return transform.rotation * axis;
+					return  transform.rotation * axis ;
 				}
 			}
 

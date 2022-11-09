@@ -235,6 +235,8 @@ namespace RootMotion.FinalIK {
 			/// Local axis to target/child bone.
 			/// </summary>
 			public Vector3 axis = -Vector3.right;
+
+			public Vector3 startAxis;
 			
 			/// <summary>
 			/// Gets the rotation limit component from the Transform if there is any.
